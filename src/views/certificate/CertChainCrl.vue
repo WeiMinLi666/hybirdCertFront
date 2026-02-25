@@ -7,7 +7,7 @@
 
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
       <!-- 证书链 -->
-      <el-card>
+      <el-card>         
         <template #header>
           <span class="font-semibold">🔗 证书链</span>
         </template>
@@ -56,7 +56,7 @@
         </el-form-item>
 
         <div v-if="crlData">
-          <el-descriptions :column="1" border class="mb-4">
+          <el-descriptions v-if="crlData.crlUrl" :column="1" border class="mb-4">
             <el-descriptions-item label="Sidecar 大对象 URL">
               <div class="flex items-center gap-2">
                 <code class="text-xs text-cyan-400 break-all">{{ crlData.crlUrl }}</code>
@@ -66,6 +66,14 @@
               </div>
             </el-descriptions-item>
           </el-descriptions>
+          <el-alert
+            v-else
+            title="当前无 Sidecar 发布 URL（尚未有证书被吊销，CRL 为实时生成的空列表）"
+            type="info"
+            :closable="false"
+            show-icon
+            class="mb-4"
+          />
 
           <div class="flex items-center justify-between mb-2">
             <span class="text-sm text-slate-400 font-medium">CRL PEM</span>

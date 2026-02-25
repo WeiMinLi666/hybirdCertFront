@@ -52,7 +52,9 @@
           <el-descriptions-item label="Key ID">
             <code class="text-cyan-400">{{ keyInfo.keyId }}</code>
           </el-descriptions-item>
-          <el-descriptions-item label="算法">{{ keyInfo.algorithm }}</el-descriptions-item>
+          <el-descriptions-item label="PQC 算法">
+            <el-tag effect="plain" type="info">{{ keyInfo.pqcAlg || '—' }}</el-tag>
+          </el-descriptions-item>
           <el-descriptions-item label="状态">
             <el-tag
               :type="keyInfo.status === 'ACTIVE' ? 'success' : keyInfo.status === 'DISABLED' ? 'danger' : 'warning'"
@@ -62,8 +64,27 @@
             </el-tag>
           </el-descriptions-item>
           <el-descriptions-item label="用途">{{ keyInfo.usage }}</el-descriptions-item>
-          <el-descriptions-item label="创建时间">{{ keyInfo.createdAt }}</el-descriptions-item>
-          <el-descriptions-item label="过期时间">{{ keyInfo.expireAt }}</el-descriptions-item>
+          <el-descriptions-item label="所属主体 ID">
+            <code class="text-cyan-400 text-xs">{{ keyInfo.ownerPrincipalId || '—' }}</code>
+          </el-descriptions-item>
+          <el-descriptions-item label="SM2 公钥">
+            <div v-if="keyInfo.sm2PublicKey" class="flex items-center gap-2">
+              <code class="text-emerald-400 text-xs truncate max-w-xs">{{ keyInfo.sm2PublicKey.substring(0, 32) }}...</code>
+              <el-button size="small" text @click="copyText(keyInfo.sm2PublicKey)">
+                <el-icon><CopyDocument /></el-icon>
+              </el-button>
+            </div>
+            <span v-else class="text-slate-500">—</span>
+          </el-descriptions-item>
+          <el-descriptions-item label="PQC 公钥" :span="2">
+            <div v-if="keyInfo.pqcPublicKey" class="flex items-center gap-2">
+              <code class="text-emerald-400 text-xs truncate max-w-md">{{ keyInfo.pqcPublicKey.substring(0, 48) }}...</code>
+              <el-button size="small" text @click="copyText(keyInfo.pqcPublicKey)">
+                <el-icon><CopyDocument /></el-icon>
+              </el-button>
+            </div>
+            <span v-else class="text-slate-500">—</span>
+          </el-descriptions-item>
         </el-descriptions>
       </el-card>
     </transition>
@@ -72,7 +93,7 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import { Search, Lock } from '@element-plus/icons-vue'
+import { Search, Lock, CopyDocument } from '@element-plus/icons-vue'
 import { ElMessage } from 'element-plus'
 import { getKmcKey, disableKmcKey } from '@/api/kmc'
 import type { KmcKeyInfo } from '@/types'
@@ -95,6 +116,11 @@ async function handleSearch() {
   } finally {
     loading.value = false
   }
+}
+
+function copyText(text: string) {
+  navigator.clipboard.writeText(text)
+  ElMessage.success('已复制到剪贴板')
 }
 
 async function handleDisable() {

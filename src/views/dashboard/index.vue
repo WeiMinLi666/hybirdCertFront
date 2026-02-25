@@ -96,13 +96,14 @@
 </template>
 
 <script setup lang="ts">
-import { reactive } from 'vue'
+import { reactive, onMounted } from 'vue'
+import request from '@/utils/request'
 
 const statsCards = reactive([
-  { title: '已签发证书', value: '1,284', icon: 'Ticket', color: '#6366f1' },
-  { title: '混合证书', value: '856', icon: 'Connection', color: '#06b6d4' },
-  { title: 'KMC 托管密钥', value: '2,047', icon: 'Key', color: '#10b981' },
-  { title: '已吊销证书', value: '23', icon: 'CircleClose', color: '#ef4444' },
+  { title: '已签发证书', value: '—', icon: 'Ticket', color: '#6366f1' },
+  { title: '混合证书', value: '—', icon: 'Connection', color: '#06b6d4' },
+  { title: 'KMC 托管密钥', value: '—', icon: 'Key', color: '#10b981' },
+  { title: '已吊销证书', value: '—', icon: 'CircleClose', color: '#ef4444' },
 ])
 
 const quickActions = reactive([
@@ -121,6 +122,22 @@ const services = reactive([
   { name: 'Sidecar Service', status: 'UP' },
   { name: 'Admin Service', status: 'UP' },
 ])
+
+async function fetchStats() {
+  try {
+    const data = await request.get<Record<string, number>>('/stats')
+    if (data) {
+      statsCards[0].value = (data.totalCerts ?? 0).toLocaleString()
+      statsCards[1].value = (data.hybridCerts ?? 0).toLocaleString()
+      statsCards[2].value = (data.kmcKeys ?? 0).toLocaleString()
+      statsCards[3].value = (data.revokedCerts ?? 0).toLocaleString()
+    }
+  } catch {
+    // keep '—' on error
+  }
+}
+
+onMounted(() => { fetchStats() })
 </script>
 
 <style scoped>

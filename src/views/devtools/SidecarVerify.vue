@@ -33,30 +33,29 @@
 
     <!-- 验证结果 -->
     <transition name="fade-slide">
-      <el-card v-if="verifyResult !== null" class="mt-6">
-        <el-result
-          :icon="verifyResult.valid ? 'success' : 'error'"
-          :title="verifyResult.valid ? '✅ 完整性验证通过' : '❌ 完整性验证失败'"
-          :sub-title="verifyResult.valid
-            ? `对象 ${verifyResult.objectId} 的 Merkle Root Hash 匹配成功`
-            : `对象 ${verifyResult.objectId} 的 Hash 不匹配，数据可能已被篡改`"
-        >
-          <template #extra>
-            <el-descriptions :column="1" border>
-              <el-descriptions-item label="Object ID">
-                <code class="text-cyan-400">{{ verifyResult.objectId }}</code>
-              </el-descriptions-item>
-              <el-descriptions-item label="Root Hash">
-                <code class="text-xs">{{ verifyResult.rootHash }}</code>
-              </el-descriptions-item>
-              <el-descriptions-item label="验证状态">
-                <el-tag :type="verifyResult.valid ? 'success' : 'danger'" effect="dark">
-                  {{ verifyResult.valid ? 'VALID' : 'INVALID' }}
-                </el-tag>
-              </el-descriptions-item>
-            </el-descriptions>
-          </template>
-        </el-result>
+      <el-card v-if="verifyResult !== null" class="mt-6 result-card">
+        <div class="result-header" :class="verifyResult.verified ? 'result-success' : 'result-error'">
+          <span class="result-icon">{{ verifyResult.verified ? '✅' : '❌' }}</span>
+          <span class="result-title">{{ verifyResult.verified ? '完整性验证通过' : '完整性验证失败' }}</span>
+        </div>
+        <p class="result-subtitle">
+          {{ verifyResult.verified
+            ? `对象 ${lastObjectId} 的 Merkle Root Hash 匹配成功，数据未被篡改`
+            : `对象 ${lastObjectId} 的 Hash 不匹配，数据可能已被篡改！` }}
+        </p>
+        <el-descriptions :column="1" border class="mt-4">
+          <el-descriptions-item label="Object ID">
+            <code class="text-cyan-400">{{ lastObjectId }}</code>
+          </el-descriptions-item>
+          <el-descriptions-item label="Root Hash">
+            <code class="text-xs text-slate-200">{{ lastRootHash }}</code>
+          </el-descriptions-item>
+          <el-descriptions-item label="验证状态">
+            <el-tag :type="verifyResult.verified ? 'success' : 'danger'" effect="dark">
+              {{ verifyResult.verified ? 'VALID' : 'INVALID' }}
+            </el-tag>
+          </el-descriptions-item>
+        </el-descriptions>
       </el-card>
     </transition>
   </div>
@@ -72,6 +71,9 @@ import type { SidecarVerifyResult } from '@/types'
 const formRef = ref<FormInstance>()
 const loading = ref(false)
 const verifyResult = ref<SidecarVerifyResult | null>(null)
+// 保存最后一次提交的表单值用于结果显示（后端只返回 verified 字段）
+const lastObjectId = ref('')
+const lastRootHash = ref('')
 
 const form = reactive({
   objectId: '',
@@ -89,9 +91,11 @@ async function handleVerify() {
 
   loading.value = true
   try {
+    lastObjectId.value = form.objectId
+    lastRootHash.value = form.rootHash
     verifyResult.value = await verifySidecarObject(form.objectId, form.rootHash)
-    ElMessage[verifyResult.value.valid ? 'success' : 'error'](
-      verifyResult.value.valid ? '完整性验证通过' : '完整性验证失败',
+    ElMessage[verifyResult.value.verified ? 'success' : 'error'](
+      verifyResult.value.verified ? '完整性验证通过' : '完整性验证失败',
     )
   } catch {
     verifyResult.value = null
@@ -100,3 +104,41 @@ async function handleVerify() {
   }
 }
 </script>
+
+<style scoped>
+.result-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 20px;
+  border-radius: 10px;
+  margin-bottom: 12px;
+}
+
+.result-success {
+  background: rgba(16, 185, 129, 0.15);
+  border: 1px solid rgba(16, 185, 129, 0.4);
+}
+
+.result-error {
+  background: rgba(239, 68, 68, 0.15);
+  border: 1px solid rgba(239, 68, 68, 0.4);
+}
+
+.result-icon {
+  font-size: 28px;
+}
+
+.result-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: #f1f5f9;
+}
+
+.result-subtitle {
+  color: #94a3b8;
+  font-size: 14px;
+  margin: 0 0 4px 0;
+  padding: 0 4px;
+}
+</style>

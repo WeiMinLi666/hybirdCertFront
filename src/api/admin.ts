@@ -1,5 +1,5 @@
 import request from '@/utils/request'
-import type { PqcPolicy, SidecarConfig } from '@/types'
+import type { PqcPolicy, SidecarConfig, AuditEvent } from '@/types'
 
 /** 获取 PQC 策略配置 */
 export function getPqcPolicy() {
@@ -19,4 +19,11 @@ export function getSidecarConfig() {
 /** 更新 Sidecar 配置 */
 export function updateSidecarConfig(data: SidecarConfig) {
     return request.put<void>('/admin/sidecar-config', data)
+}
+
+/** 查询审计日志列表 */
+export function listAuditLogs(eventType?: string, limit = 200) {
+    const params: Record<string, any> = { limit }
+    if (eventType) params.eventType = eventType
+    return request.get<AuditEvent[]>('/audit/list', { params })
 }

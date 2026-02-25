@@ -145,6 +145,37 @@ body,
   --el-descriptions-item-bordered-label-background: #1e293b !important;
 }
 
+.el-descriptions__body {
+  background: transparent !important;
+}
+
+.el-descriptions__body .el-descriptions__table {
+  background: transparent !important;
+}
+
+/* 有 border 属性时的表格行/单元格暗色覆盖 */
+.el-descriptions--border .el-descriptions__body .el-descriptions__table tr {
+  background: transparent !important;
+}
+
+.el-descriptions--border .el-descriptions__cell {
+  background: var(--bg-card) !important;
+  border-color: var(--border-color) !important;
+}
+
+.el-descriptions__label.el-descriptions__cell.is-bordered-label {
+  background: #0f172a !important;
+  color: var(--text-secondary) !important;
+  font-weight: 500 !important;
+}
+
+.el-descriptions__content.el-descriptions__cell.is-bordered-content {
+  background: var(--bg-card) !important;
+  color: var(--text-primary) !important;
+  word-break: break-all !important;
+}
+
+/* 无 border 属性时的 fallback */
 .el-descriptions__label {
   color: var(--text-secondary) !important;
   font-weight: 500 !important;
@@ -152,6 +183,46 @@ body,
 
 .el-descriptions__content {
   color: var(--text-primary) !important;
+  word-break: break-all !important;
+}
+
+/* el-table 暗色主题 */
+.el-table {
+  --el-table-bg-color: transparent !important;
+  --el-table-tr-bg-color: transparent !important;
+  --el-table-row-hover-bg-color: rgba(99, 102, 241, 0.06) !important;
+  --el-table-header-bg-color: rgba(15, 23, 42, 0.6) !important;
+  --el-table-header-text-color: #94a3b8 !important;
+  --el-table-text-color: #cbd5e1 !important;
+  --el-table-border-color: var(--border-color) !important;
+  --el-table-current-row-bg-color: rgba(99, 102, 241, 0.08) !important;
+  color: #cbd5e1 !important;
+}
+
+.el-table th.el-table__cell {
+  background: rgba(15, 23, 42, 0.6) !important;
+  color: #94a3b8 !important;
+  font-weight: 600 !important;
+  font-size: 12px !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.04em !important;
+  border-bottom: 1px solid var(--border-color) !important;
+}
+
+.el-table td.el-table__cell {
+  border-bottom: 1px solid rgba(51, 65, 85, 0.4) !important;
+}
+
+.el-table__empty-text {
+  color: var(--text-muted) !important;
+}
+
+.el-table--striped .el-table__body tr.el-table__row--striped td.el-table__cell {
+  background: rgba(30, 41, 59, 0.3) !important;
+}
+
+.el-table--enable-row-hover .el-table__body tr:hover > td.el-table__cell {
+  background: rgba(99, 102, 241, 0.06) !important;
 }
 
 .el-tag {

@@ -62,6 +62,12 @@ const routes: RouteRecordRaw[] = [
                 meta: { title: 'KMC 密钥查询', icon: 'Key', group: 'DevTools' },
             },
             {
+                path: 'devtools/kmc-distribution',
+                name: 'KmcDistribution',
+                component: () => import('@/views/devtools/KmcDistribution.vue'),
+                meta: { title: 'KMC 密钥分发', icon: 'Promotion', group: 'DevTools' },
+            },
+            {
                 path: 'devtools/sidecar',
                 name: 'SidecarVerify',
                 component: () => import('@/views/devtools/SidecarVerify.vue'),
@@ -80,6 +86,12 @@ const routes: RouteRecordRaw[] = [
                 name: 'SidecarConfig',
                 component: () => import('@/views/admin/SidecarConfig.vue'),
                 meta: { title: 'Sidecar 配置', icon: 'Files', group: '系统配置' },
+            },
+            {
+                path: 'admin/audit-log',
+                name: 'AuditLog',
+                component: () => import('@/views/admin/AuditLog.vue'),
+                meta: { title: '审计日志', icon: 'Document', group: '系统配置' },
             },
         ],
     },

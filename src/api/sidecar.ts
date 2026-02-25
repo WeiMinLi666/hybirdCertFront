@@ -9,8 +9,7 @@ export function getSidecarObject(objectId: string) {
 /** 验证 Sidecar 对象防篡改 */
 export function verifySidecarObject(objectId: string, rootHash: string) {
     return request.post<SidecarVerifyResult>(
-        `/sidecar/objects/${objectId}/verify`,
-        null,
-        { params: { rootHash } },
+        '/sidecar/verify',
+        { objectId, rootHash },
     )
 }

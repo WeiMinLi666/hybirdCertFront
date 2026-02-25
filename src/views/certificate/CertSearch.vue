@@ -40,15 +40,15 @@
           <template #header>
             <span class="font-semibold">📋 证书基本信息</span>
           </template>
-          <el-descriptions :column="2" border>
-            <el-descriptions-item label="序列号" :span="2">
-              <code class="text-cyan-400">{{ certInfo.serial }}</code>
+          <el-descriptions :column="1" border>
+            <el-descriptions-item label="序列号">
+              <code class="cert-serial">{{ certInfo.serial }}</code>
             </el-descriptions-item>
-            <el-descriptions-item label="主题 DN" :span="2">
-              {{ certInfo.subjectDn }}
+            <el-descriptions-item label="主题 DN">
+              <span class="cert-dn">{{ certInfo.subjectDn }}</span>
             </el-descriptions-item>
-            <el-descriptions-item label="签发者 DN" :span="2">
-              {{ certInfo.issuerDn }}
+            <el-descriptions-item label="签发者 DN">
+              <span class="cert-dn">{{ certInfo.issuerDn }}</span>
             </el-descriptions-item>
             <el-descriptions-item label="生效时间">{{ certInfo.notBefore }}</el-descriptions-item>
             <el-descriptions-item label="截止时间">{{ certInfo.notAfter }}</el-descriptions-item>
@@ -66,7 +66,7 @@
               </el-tag>
             </el-descriptions-item>
             <el-descriptions-item label="指纹">
-              <code class="text-xs text-slate-400">{{ certInfo.fingerprint || '—' }}</code>
+              <code class="cert-fingerprint">{{ certInfo.fingerprint || '—' }}</code>
             </el-descriptions-item>
           </el-descriptions>
         </el-card>
@@ -81,7 +81,7 @@
               </el-button>
             </div>
           </template>
-          <pre class="pem-block">{{ certInfo.pem }}</pre>
+          <pre class="pem-block">{{ formattedPem }}</pre>
         </el-card>
       </div>
     </transition>
@@ -95,7 +95,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { Search, Download, CopyDocument, Warning } from '@element-plus/icons-vue'
 import { ElMessage } from 'element-plus'
 import { getCertificate } from '@/api/ca'
@@ -105,6 +105,11 @@ const serial = ref('')
 const loading = ref(false)
 const searched = ref(false)
 const certInfo = ref<CertificateInfo | null>(null)
+
+const formattedPem = computed(() => {
+  if (!certInfo.value?.pem) return ''
+  return certInfo.value.pem.replace(/\\n/g, '\n')
+})
 
 async function handleSearch() {
   if (!serial.value.trim()) {
@@ -124,15 +129,15 @@ async function handleSearch() {
 }
 
 function copyPem() {
-  if (certInfo.value?.pem) {
-    navigator.clipboard.writeText(certInfo.value.pem)
+  if (formattedPem.value) {
+    navigator.clipboard.writeText(formattedPem.value)
     ElMessage.success('已复制到剪贴板')
   }
 }
 
 function handleDownload() {
   if (!certInfo.value?.pem) return
-  const blob = new Blob([certInfo.value.pem], { type: 'application/x-pem-file' })
+  const blob = new Blob([formattedPem.value], { type: 'application/x-pem-file' })
   const url = URL.createObjectURL(blob)
   const a = document.createElement('a')
   a.href = url
@@ -144,6 +149,24 @@ function handleDownload() {
 </script>
 
 <style scoped>
+.cert-serial {
+  color: #22d3ee;
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+  font-size: 14px;
+}
+
+.cert-dn {
+  word-break: break-all;
+  line-height: 1.6;
+}
+
+.cert-fingerprint {
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+  font-size: 12px;
+  color: #94a3b8;
+  word-break: break-all;
+}
+
 .pem-block {
   background: #0f172a;
   border: 1px solid var(--border-color);

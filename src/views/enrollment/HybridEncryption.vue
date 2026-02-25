@@ -18,8 +18,8 @@
             <el-input v-model="form.principalCode" placeholder="设备/主体唯一编码" />
           </el-form-item>
 
-          <el-form-item label="目标主体 ID (Target Principal)" prop="targetPrincipalId">
-            <el-input v-model="form.targetPrincipalId" placeholder="目标通信方主体编码" />
+          <el-form-item label="目标主体 ID（可选）" prop="targetPrincipalId">
+            <el-input v-model="form.targetPrincipalId" placeholder="目标通信方主体编码（可不填）" />
           </el-form-item>
         </div>
 
@@ -74,9 +74,15 @@
             <el-descriptions-item label="状态">
               <el-tag type="success" effect="dark">{{ result.status }}</el-tag>
             </el-descriptions-item>
+            <el-descriptions-item label="KMC 密钥 ID">
+              <code class="text-cyan-400">{{ result.kmcKeyId }}</code>
+            </el-descriptions-item>
+            <el-descriptions-item label="分发单 ID (Distribution ID)">
+              <code class="text-cyan-400">{{ result.distributionId }}</code>
+            </el-descriptions-item>
           </el-descriptions>
 
-          <pre class="pem-block">{{ result.certificatePem }}</pre>
+          <pre class="pem-block">{{ formattedPem }}</pre>
         </el-card>
 
         <!-- KMC 密钥下发信封 -->
@@ -107,7 +113,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive } from 'vue'
+import { ref, reactive, computed } from 'vue'
 import { Lock, Refresh, CopyDocument } from '@element-plus/icons-vue'
 import { ElMessage, type FormInstance, type FormRules } from 'element-plus'
 import { enrollEncryption } from '@/api/enroll'
@@ -116,6 +122,11 @@ import type { EnrollEncryptionReq, EnrollEncryptionRes } from '@/types'
 const formRef = ref<FormInstance>()
 const loading = ref(false)
 const result = ref<EnrollEncryptionRes | null>(null)
+
+const formattedPem = computed(() => {
+  if (!result.value?.certificatePem) return ''
+  return result.value.certificatePem.replace(/\\n/g, '\n')
+})
 
 const form = reactive<EnrollEncryptionReq>({
   principalCode: '',
@@ -126,7 +137,6 @@ const form = reactive<EnrollEncryptionReq>({
 
 const rules: FormRules = {
   principalCode: [{ required: true, message: '必填', trigger: 'blur' }],
-  targetPrincipalId: [{ required: true, message: '必填', trigger: 'blur' }],
   pqcAlg: [{ required: true, message: '请选择算法', trigger: 'change' }],
   nonce: [{ required: true, message: '必填', trigger: 'blur' }],
 }
@@ -153,8 +163,8 @@ async function handleSubmit() {
 }
 
 function copyPem() {
-  if (result.value?.certificatePem) {
-    navigator.clipboard.writeText(result.value.certificatePem)
+  if (formattedPem.value) {
+    navigator.clipboard.writeText(formattedPem.value)
     ElMessage.success('已复制 PEM 到剪贴板')
   }
 }

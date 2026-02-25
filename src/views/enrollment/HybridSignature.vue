@@ -97,14 +97,14 @@
           <el-tag effect="dark">{{ result.requestId }}</el-tag>
         </el-descriptions-item>
         <el-descriptions-item label="状态">
-          <el-tag :type="result.status === 'COMPLETED' ? 'success' : 'warning'" effect="dark">
+          <el-tag :type="result.status === 'ISSUED' ? 'success' : 'warning'" effect="dark">
             {{ result.status }}
           </el-tag>
         </el-descriptions-item>
       </el-descriptions>
 
       <!-- 证书 PEM 原文 -->
-      <div v-if="result.message && result.status === 'COMPLETED'" class="mt-4">
+      <div v-if="result.message && result.status === 'ISSUED'" class="mt-4">
         <div class="flex items-center justify-between mb-2">
           <span class="text-sm font-medium text-slate-400">签发证书 PEM</span>
           <el-button size="small" text @click="copyPem">
@@ -112,14 +112,14 @@
             复制
           </el-button>
         </div>
-        <pre class="pem-block">{{ result.message }}</pre>
+        <pre class="pem-block">{{ formattedPem }}</pre>
       </div>
     </el-card>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, reactive } from 'vue'
+import { ref, reactive, computed } from 'vue'
 import { Refresh, Upload, CopyDocument } from '@element-plus/icons-vue'
 import { ElMessage, type FormInstance, type FormRules } from 'element-plus'
 import { enrollHybrid } from '@/api/enroll'
@@ -128,6 +128,12 @@ import type { EnrollHybridReq, EnrollHybridRes } from '@/types'
 const formRef = ref<FormInstance>()
 const loading = ref(false)
 const result = ref<EnrollHybridRes | null>(null)
+
+/** 将 PEM 中的字面 \n 转为真实换行，确保显示正常 */
+const formattedPem = computed(() => {
+  if (!result.value?.message) return ''
+  return result.value.message.replace(/\\n/g, '\n')
+})
 
 const form = reactive<EnrollHybridReq>({
   principalCode: '',
@@ -171,8 +177,8 @@ async function handleSubmit() {
 }
 
 function copyPem() {
-  if (result.value?.message) {
-    navigator.clipboard.writeText(result.value.message)
+  if (formattedPem.value) {
+    navigator.clipboard.writeText(formattedPem.value)
     ElMessage.success('已复制到剪贴板')
   }
 }

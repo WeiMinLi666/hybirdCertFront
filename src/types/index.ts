@@ -58,6 +58,8 @@ export interface EnrollEncryptionRes {
     requestId: string
     status: string
     certificatePem: string
+    kmcKeyId: string
+    distributionId: string
     kmcDistributionUrl: string
 }
 
@@ -115,14 +117,15 @@ export interface RevokeReq {
 // KMC 模块
 // ========================
 
-/** KMC 密钥信息 */
+/** KMC 密钥信息（与后端 KmcKeyResponseDTO 对齐） */
 export interface KmcKeyInfo {
     keyId: string
-    algorithm: string
-    status: string
-    createdAt: string
-    expireAt: string
+    ownerPrincipalId: string
     usage: string
+    sm2PublicKey: string
+    pqcAlg: string
+    pqcPublicKey: string
+    status: string
 }
 
 // ========================
@@ -140,7 +143,7 @@ export interface SidecarObjectInfo {
 
 /** Sidecar 验证结果 */
 export interface SidecarVerifyResult {
-    valid: boolean
+    verified: boolean
     objectId: string
     rootHash: string
 }
@@ -154,9 +157,13 @@ export interface PqcPolicy {
     name: string
     enabled: boolean
     pqcAlg: string
+    /** 默认签名算法（混合证书），如 ML-DSA-65 */
+    defaultSignAlg: string
+    /** 默认加密算法（加密证书），如 ML-KEM-768 */
+    defaultEncAlg: string
     securityLevel: string
-    paramsJson: string
     version: number
+    effectiveFrom?: string
 }
 
 /** Sidecar 配置 */
@@ -172,6 +179,22 @@ export interface SidecarConfig {
 // ========================
 // 通用 / 辅助
 // ========================
+
+/** 审计事件 */
+export interface AuditEvent {
+    eventId: string
+    eventTime: string
+    eventType: string
+    actorPrincipalId?: string
+    actorAdminId?: string
+    objectType: string
+    objectId: string
+    result: string
+    message?: string
+    traceId?: string
+    requestId?: string
+    ip?: string
+}
 
 /** 菜单项 */
 export interface MenuItem {

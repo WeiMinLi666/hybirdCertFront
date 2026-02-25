@@ -78,6 +78,10 @@
             <el-icon><Key /></el-icon>
             KMC 密钥查询
           </el-menu-item>
+          <el-menu-item index="/devtools/kmc-distribution">
+            <el-icon><Promotion /></el-icon>
+            KMC 密钥分发
+          </el-menu-item>
           <el-menu-item index="/devtools/sidecar">
             <el-icon><CircleCheck /></el-icon>
             Sidecar 验证
@@ -97,6 +101,10 @@
           <el-menu-item index="/admin/sidecar-config">
             <el-icon><Files /></el-icon>
             Sidecar 配置
+          </el-menu-item>
+          <el-menu-item index="/admin/audit-log">
+            <el-icon><Document /></el-icon>
+            审计日志
           </el-menu-item>
         </el-sub-menu>
       </el-menu>

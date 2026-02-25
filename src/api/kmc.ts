@@ -10,3 +10,13 @@ export function getKmcKey(keyId: string) {
 export function disableKmcKey(keyId: string) {
     return request.put<void>(`/kmc/keys/${keyId}/disable`)
 }
+
+/** 查询密钥分发记录 */
+export function getKmcDistribution(distributionId: string) {
+    return request.get<{ distributionId: string; packageUrl: string; status: string }>(`/kmc/distributions/${distributionId}`)
+}
+
+/** 创建密钥分发 */
+export function createKmcDistribution(data: { keyId: string; targetPrincipalId?: string }) {
+    return request.post<{ distributionId: string; packageUrl: string; status: string }>('/kmc/distributions', data)
+}

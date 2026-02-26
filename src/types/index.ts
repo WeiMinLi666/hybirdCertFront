@@ -48,7 +48,7 @@ export interface EnrollHybridRes {
 /** 混合加密证书申请请求 */
 export interface EnrollEncryptionReq {
     principalCode: string
-    targetPrincipalId: string
+    targetPrincipalId?: string
     pqcAlg: string
     nonce: string
 }

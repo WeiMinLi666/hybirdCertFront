@@ -69,15 +69,9 @@
         label-position="top"
         @submit.prevent="handleCreate"
       >
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-x-6">
-          <el-form-item label="Key ID" prop="keyId">
-            <el-input v-model="form.keyId" placeholder="KMC 密钥 ID" />
-          </el-form-item>
-
-          <el-form-item label="目标主体 ID（可选）">
-            <el-input v-model="form.targetPrincipalId" placeholder="目标通信方主体编码（可不填）" />
-          </el-form-item>
-        </div>
+        <el-form-item label="Key ID" prop="keyId">
+          <el-input v-model="form.keyId" placeholder="KMC 密钥 ID" />
+        </el-form-item>
 
         <el-form-item>
           <el-button type="primary" :loading="createLoading" @click="handleCreate" size="large">
@@ -166,7 +160,6 @@ const createLoading = ref(false)
 const createResult = ref<DistributionResult | null>(null)
 const form = reactive({
   keyId: '',
-  targetPrincipalId: '',
 })
 
 const rules: FormRules = {

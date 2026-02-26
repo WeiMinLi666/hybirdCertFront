@@ -17,10 +17,6 @@
           <el-form-item label="申请主体编码 (Principal Code)" prop="principalCode">
             <el-input v-model="form.principalCode" placeholder="设备/主体唯一编码" />
           </el-form-item>
-
-          <el-form-item label="目标主体 ID（可选）" prop="targetPrincipalId">
-            <el-input v-model="form.targetPrincipalId" placeholder="目标通信方主体编码（可不填）" />
-          </el-form-item>
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-x-6">
@@ -130,7 +126,6 @@ const formattedPem = computed(() => {
 
 const form = reactive<EnrollEncryptionReq>({
   principalCode: '',
-  targetPrincipalId: '',
   pqcAlg: 'ML-KEM-768',
   nonce: '',
 })

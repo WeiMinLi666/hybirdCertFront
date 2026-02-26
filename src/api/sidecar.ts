@@ -13,3 +13,8 @@ export function verifySidecarObject(objectId: string, rootHash: string) {
         { objectId, rootHash },
     )
 }
+
+/** 使 Sidecar 对象失效（触发关联证书吊销 + CRL 发布） */
+export function deleteSidecarObject(objectId: string) {
+    return request.delete<boolean>(`/sidecar/objects/${objectId}`)
+}

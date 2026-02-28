@@ -1,0 +1,1 @@
+import{r as e}from"./request-DHoSJWvM.js";function c(t){return e.get(`/ca/certificates/${t}`)}function i(t){return e.get(`/ca/certificates/${t}/chain`)}function n(t,r){return e.post(`/ca/certificates/${t}/revoke`,r)}function s(t){return e.get("/ca/crl",{params:{caId:t}})}export{i as a,s as b,c as g,n as r};

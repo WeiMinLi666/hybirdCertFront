@@ -43,6 +43,7 @@ export interface EnrollHybridRes {
     requestId: string
     status: string
     message: string  // 签发成功时为证书 PEM 原文
+    serial: string   // 证书序列号
 }
 
 /** 混合加密证书申请请求 */
@@ -58,6 +59,7 @@ export interface EnrollEncryptionRes {
     requestId: string
     status: string
     certificatePem: string
+    serial: string   // 证书序列号
     kmcKeyId: string
     distributionId: string
     kmcDistributionUrl: string

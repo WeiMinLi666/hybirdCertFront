@@ -101,6 +101,9 @@
             {{ result.status }}
           </el-tag>
         </el-descriptions-item>
+        <el-descriptions-item v-if="result.serial" label="证书序列号">
+          <code class="text-cyan-400">{{ result.serial }}</code>
+        </el-descriptions-item>
       </el-descriptions>
 
       <!-- 证书 PEM 原文 -->

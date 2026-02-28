@@ -1,0 +1,1 @@
+import{r as e}from"./request-DHoSJWvM.js";function r(t){return e.get(`/kmc/keys/${t}`)}function s(t){return e.put(`/kmc/keys/${t}/disable`)}function n(t){return e.get(`/kmc/distributions/${t}`)}function c(t){return e.post("/kmc/distributions",t)}export{n as a,c,s as d,r as g};

@@ -70,6 +70,9 @@
             <el-descriptions-item label="状态">
               <el-tag type="success" effect="dark">{{ result.status }}</el-tag>
             </el-descriptions-item>
+            <el-descriptions-item v-if="result.serial" label="证书序列号">
+              <code class="text-cyan-400">{{ result.serial }}</code>
+            </el-descriptions-item>
             <el-descriptions-item label="KMC 密钥 ID">
               <code class="text-cyan-400">{{ result.kmcKeyId }}</code>
             </el-descriptions-item>
